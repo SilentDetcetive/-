@@ -3053,8 +3053,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8d7f62edde5113344aae6f604a066dfc, type: 2}
-  m_sharedMaterial: {fileID: -3824071581310516274, guid: 8d7f62edde5113344aae6f604a066dfc, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4095,7 +4095,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u201CWASD\u201D\u79FB\u52A8\r \u53F3\u952E\u5524\u51FA\u64CD\u4F5C\u83DC\u5355\r\u9F20\u6807\u65CB\u8F6C\u955C\u5934\r\u201C1\u201D\u89E6\u53D1\u53D8\u8272\u7403\r\u201C2\u201D\u89E6\u53D1\u4F20\u9001\u95E8\r\u201C3\u201D\u89E6\u53D1\u8DC3\u5347\u6A21\u5757\r\u201C5\u201D\u89E6\u53D1\u589E\u901F\u6A21\u5757\r\u201C6\u201D\u89E6\u53D1\u6728\u9A6C\u6A21\u5757\r\u201C7\u201D\u89E6\u53D1\u4FB5\u5165\u6A21\u5757\r\u201C8\u201D\u89E6\u53D1\u900F\u89C6\u6A21\u5757\r\n\u201C9\u201D\u89E6\u53D1\u6269\u5BB9\u6A21\u5757"
+  m_Text: " \u53F3\u952E\u5524\u51FA\u64CD\u4F5C\u83DC\u5355"
 --- !u!222 &507642117
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6706,6 +6706,7 @@ GameObject:
   - component: {fileID: 879287748}
   - component: {fileID: 879287749}
   - component: {fileID: 879287750}
+  - component: {fileID: 879287751}
   m_Layer: 5
   m_Name: "\u9009\u5173\u754C\u9762"
   m_TagString: Untagged
@@ -6865,6 +6866,102 @@ MonoBehaviour:
   slideDuration: 0.6
   staggerTime: 0.08
   bannerRects: []
+--- !u!82 &879287751
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 879287743}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 947944f682f8e98489452e9a4638e503, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &901490129
 GameObject:
   m_ObjectHideFlags: 0
@@ -13536,7 +13633,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u201CWASD\u201D\u79FB\u52A8\r \u53F3\u952E\u5524\u51FA\u64CD\u4F5C\u83DC\u5355\r\u9F20\u6807\u65CB\u8F6C\u955C\u5934\r\u201C1\u201D\u89E6\u53D1\u53D8\u8272\u7403\r\u201C2\u201D\u89E6\u53D1\u4F20\u9001\u95E8\r\u201C3\u201D\u89E6\u53D1\u8DC3\u5347\u6A21\u5757\r\u201C5\u201D\u89E6\u53D1\u589E\u901F\u6A21\u5757\r\u201C6\u201D\u89E6\u53D1\u6728\u9A6C\u6A21\u5757\r\u201C7\u201D\u89E6\u53D1\u4FB5\u5165\u6A21\u5757\r\u201C8\u201D\u89E6\u53D1\u900F\u89C6\u6A21\u5757\r\n\u201C9\u201D\u89E6\u53D1\u6269\u5BB9\u6A21\u5757"
+  m_Text: " \u53F3\u952E\u5524\u51FA\u64CD\u4F5C\u83DC\u5355\r"
 --- !u!222 &1694043331
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -1875,7 +1875,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: "\u201C1\u201D\u89E6\u53D1\u53D8\u8272\u7403\r\n\u201C2\u201D\u89E6\u53D1\u4F20\u9001\u95E8\n\r\u201C3\u201D\u89E6\u53D1\u8DC3\u5347\u6A21\u5757\r\n\u201C5\u201D\u89E6\u53D1\u589E\u901F\u6A21\u5757\r\n\u201C6\u201D\u89E6\u53D1\u6728\u9A6C\u6A21\u5757\r\n\u201C7\u201D\u89E6\u53D1\u4FB5\u5165\u6A21\u5757\n\r\u201C8\u201D\u89E6\u53D1\u900F\u89C6\u6A21\u5757\r\n\u201C9\u201D\u89E6\u53D1\u6269\u5BB9\u6A21\u5757"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2115a8ca0cd5c7b4ca7be7604d750dd5, type: 2}
   m_sharedMaterial: {fileID: -5896736061752022413, guid: 2115a8ca0cd5c7b4ca7be7604d750dd5, type: 2}
@@ -1938,7 +1938,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 5.541504, w: 0}
+  m_margin: {x: 0, y: 0, z: -125.60596, w: 240.12912}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
