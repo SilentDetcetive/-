@@ -8,6 +8,10 @@ public class VictoryUI : MonoBehaviour
     [Header("UI 引用")]
     public GameObject victoryPanel;
 
+    [Header("满星通关设置")]
+    [Tooltip("把写有满星文案的 UI 文本物体拖到这里")]
+    public GameObject fullStarMessageObj; // 【新增】：用于挂载满星时的那句话
+
     private void Awake()
     {
         if (Instance == null)
@@ -28,22 +32,31 @@ public class VictoryUI : MonoBehaviour
         }
     }
 
-    public void ShowVictoryPanel()
+    // 【修改】：新增了 bool isFullStar 参数，接收来自 Endpoint 的评级结果
+    public void ShowVictoryPanel(bool isFullStar)
     {
         if (victoryPanel != null)
         {
             victoryPanel.SetActive(true);
 
             // ==========================================
-            // 【新增功能 1】：解锁并显示鼠标指针
+            // 【保留功能 1】：解锁并显示鼠标指针
             // ==========================================
             Cursor.visible = true;                      // 让鼠标可见
             Cursor.lockState = CursorLockMode.None;     // 解除鼠标的锁定状态，允许它自由移动
 
             // ==========================================
-            // 【新增功能 2】：停止游戏运行（时间冻结）
+            // 【保留功能 2】：停止游戏运行（时间冻结）
             // ==========================================
             Time.timeScale = 0f;                        // 将时间流逝速度设为 0，游戏画面和逻辑暂停
+
+            // ==========================================
+            // 【新增协议】：根据时间评级决定是否显示满星文案
+            // ==========================================
+            if (fullStarMessageObj != null)
+            {
+                fullStarMessageObj.SetActive(isFullStar);
+            }
         }
     }
 

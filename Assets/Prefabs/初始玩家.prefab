@@ -203,10 +203,9 @@ MonoBehaviour:
   formatBulletPrefab: {fileID: 0}
   formatBulletSpawnPoint: {fileID: 0}
   formatBulletSpeed: 8
-  wallWalkPortalKey: 57
-  wallPortalCheckRadius: 0.35
-  wallPortalRayDistance: 1.5
-  wallSupportCheckDistance: 1.2
+  currentUp: {x: 0, y: 1, z: 0}
+  beanCount: 0
+  beanCountText: {fileID: 0}
 --- !u!114 &8885969665359900946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -238,6 +237,10 @@ MonoBehaviour:
     material: {fileID: 2100000, guid: 92a444b0d12802e48a8a426dd8cffda9, type: 2}
   - colorType: 7
     material: {fileID: 2100000, guid: aaf89e0e991e43d4d9fc51dedf70b80c, type: 2}
+  - colorType: 8
+    material: {fileID: 2100000, guid: 4f21d2d66646ed7468a3360dba590edf, type: 2}
+  - colorType: 9
+    material: {fileID: 2100000, guid: 3fc25f0aee6929b4b80a28c2a7e91c19, type: 2}
   startColor: 0
 --- !u!114 &-3406985628900755768
 MonoBehaviour:

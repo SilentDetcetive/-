@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af652ccbfe5d18f41ae0f27360ac64fc, type: 3}
+  m_Name: C03
+  m_EditorClassIdentifier: 
+  characterID: "\u4F50\u6069"
+  characterName: "\u4F50\u6069"
+  moveDuration: 0.65
+  maxStability: 5
+  inventorySlots: 5
+  initialItems: 03000000
+  characterIcon: {fileID: 21300000, guid: 270d39550d1620e4bac32b0a94821d7e, type: 3}

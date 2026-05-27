@@ -1,31 +1,53 @@
 using UnityEngine;
-using UnityEngine.EventSystems; // 必须引入这个命名空间才能使用点击接口
+using UnityEngine.EventSystems;
 
-// 继承 IPointerClickHandler 接口，接管鼠标点击事件
 public class LevelNode : MonoBehaviour, IPointerClickHandler
 {
     [Header("关卡专属数据")]
     public string levelTitle = "第一关：边缘接入";
 
-    [TextArea(3, 5)] // 让文本框在 Inspector 里变大，方便你写长篇简介
+    [TextArea(3, 5)]
     public string levelBriefing = "发现微弱的系统漏洞，请在此处建立初始数据锚点。";
 
-    public string sceneToLoad = "Level_1"; // 对应的场景名称
+    public string sceneToLoad = "Level_1";
 
-    // 当鼠标点击这个物体时，Unity会自动调用这个方法
+    [Header("关卡专属 Panel")]
+    public GameObject myLevelPanel;
+
+    // ==========================================
+    // 【新增】：当前节点的权限编号
+    // ==========================================
+    [Header("解锁条件")]
+    [Tooltip("这个节点代表第几关？系统会根据存档自动判断是否显示它")]
+    public int thisLevelIndex = 1;
+
+    private void Start()
+    {
+        // 防呆设计：隐藏专属 Panel
+        if (myLevelPanel != null)
+        {
+            myLevelPanel.SetActive(false);
+        }
+
+        // ==========================================
+        // 【新增】：权限校验协议
+        // ==========================================
+        // 读取系统存档，看玩家最高拥有第几关的权限（默认给 1）
+        int unlockedLevel = PlayerPrefs.GetInt("UnlockedLevel", 1);
+
+        // 如果这个节点要求的关卡数，大于玩家拥有的权限，直接隐藏自身！
+        if (thisLevelIndex > unlockedLevel)
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
     public void OnPointerClick(PointerEventData eventData)
     {
-        // 判定：如果是鼠标左键
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            // 呼叫管理器，把自己的数据传过去并显示
-            LevelDetailManager.Instance.ShowDetails(levelTitle, levelBriefing, sceneToLoad);
+            LevelDetailManager.Instance.ShowDetails(levelTitle, levelBriefing, sceneToLoad, myLevelPanel);
         }
-        // 判定：如果是鼠标右键
-        else if (eventData.button == PointerEventData.InputButton.Right)
-        {
-            // 呼叫管理器，隐藏界面
-            LevelDetailManager.Instance.HideDetails();
-        }
+        
     }
 }

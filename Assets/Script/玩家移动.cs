@@ -137,6 +137,9 @@ public class GridPlayerMover : MonoBehaviour
     private float formatBulletRefreshTimer = 0f;
     [Header("重力系统")]
     public Vector3 currentUp = Vector3.up;
+    [Header("糖豆收集系统")]
+    public int beanCount = 0;                          // 玩家吃掉的糖豆总数
+    public TMPro.TextMeshProUGUI beanCountText;        // 指向屏幕上方的UI文字
 
     // 核心转换工具：获取当前重力平面与基准地面的旋转差值
     private Quaternion GetGravityRotation()
@@ -161,7 +164,28 @@ public class GridPlayerMover : MonoBehaviour
 
     private void Start()
     {
-      
+
+        if (PlayerDataBridge.SelectedCharacter != null)
+        {
+            CharacterConfig config = PlayerDataBridge.SelectedCharacter;
+
+            // 1. 动态改写基础移速、生命值属性
+            moveDuration = config.moveDuration;
+            maxStability = config.maxStability;
+            stability = maxStability;
+
+            // 2. 根据该角色的限制定型物品栏的显示格子数
+            if (InventoryManager.Instance != null)
+            {
+                InventoryManager.Instance.SetupSlots(config.inventorySlots);
+            }
+
+            // 3. 循环发放开局自带的道具资产
+            foreach (ModuleType item in config.initialItems)
+            {
+                GiveInitialItem(item);
+            }
+        }
         rb = GetComponent<Rigidbody>();
         playerCol = GetComponent<Collider>();
 
@@ -185,6 +209,20 @@ public class GridPlayerMover : MonoBehaviour
         SetPlayerBodyAlpha(normalBodyAlpha);
     }
 
+    // 辅助方法：用来给开局发放道具并增加对应变量计数
+    private void GiveInitialItem(ModuleType item)
+    {
+        if (InventoryManager.Instance != null && InventoryManager.Instance.TryAddItem(item))
+        {
+            switch (item)
+            {
+                case ModuleType.Speed: speedModuleCount++; break;
+                case ModuleType.Trojan: trojanModuleCount++; break;
+                case ModuleType.XRay: xRayModuleCount++; break;
+                case ModuleType.Intrusion: intrusionModuleCount++; break;
+            }
+        }
+    }
     private void Update()
     {
         if (isLaunching)
@@ -420,6 +458,7 @@ public class GridPlayerMover : MonoBehaviour
         CheckXRayModulePickup();
         CheckIntrusionModulePickup();
         CheckCoreDataPickup();
+        CheckBeanPickup();
     }
 
     private bool TryFindGroundAt(Vector3 targetPos, out Vector3 groundPoint)
@@ -896,7 +935,7 @@ public class GridPlayerMover : MonoBehaviour
         if (isSkyTransitioning) return;
         if (isLaunching) return;
         if (isMoving) return;
-
+        if (InventoryManager.Instance != null) InventoryManager.Instance.RemoveItem(ModuleType.Sky);
         groundY = transform.position.y;
         skyTargetY = groundY + currentSkyHeight;
         skyMovesRemaining = currentSkyMoveLimit;
@@ -979,11 +1018,19 @@ public class GridPlayerMover : MonoBehaviour
             SkyModulePickup pickup = hit.GetComponent<SkyModulePickup>();
             if (pickup != null)
             {
-                hasSkyModule = true;
-                currentSkyHeight = pickup.skyHeight;
-                currentSkyMoveLimit = pickup.skyMoveCount;
-
-                Destroy(hit.gameObject);
+                // 【核心修改】：先问背包能塞下吗？能塞下才执行拾取
+                if (InventoryManager.Instance != null && InventoryManager.Instance.TryAddItem(ModuleType.Sky))
+                {
+                    hasSkyModule = true;
+                    currentSkyHeight = pickup.skyHeight;
+                    currentSkyMoveLimit = pickup.skyMoveCount;
+                    Debug.Log("获得超越模块");
+                    Destroy(hit.gameObject);
+                }
+                else
+                {
+                    Debug.Log("道具栏已满，无法拾取超越模块！");
+                }
                 return;
             }
         }
@@ -1059,7 +1106,8 @@ public class GridPlayerMover : MonoBehaviour
         }
 
         speedModuleCount--;
-
+        if (InventoryManager.Instance != null) InventoryManager.Instance.RemoveItem(ModuleType.Speed);
+       
         isSpeedBoostActive = true;
         speedBoostTimer = speedBoostDuration;
         speedCooldownTimer = speedBoostCooldown;
@@ -1119,20 +1167,30 @@ public class GridPlayerMover : MonoBehaviour
             QueryTriggerInteraction.Collide
         );
 
-        /*foreach (Collider hit in hits)
+        foreach (Collider hit in hits)
         {
             SpeedModulePickup pickup = hit.GetComponent<SpeedModulePickup>();
 
             if (pickup != null)
             {
-                speedModuleCount += pickup.amount;
-
-                Debug.Log("获得增速模块 +" + pickup.amount + "，当前数量：" + speedModuleCount);
-
-                Destroy(hit.gameObject);
+                // ================== 【修改这里】 ==================
+                // 先问问 UI 大管家，能塞进去吗？
+                if (InventoryManager.Instance.TryAddItem(ModuleType.Speed))
+                {
+                    // 塞进去了！数量+1，销毁地上的道具
+                    speedModuleCount += pickup.amount;
+                    Debug.Log("获得增速模块");
+                    Destroy(hit.gameObject);
+                }
+                else
+                {
+                    // 背包满了，直接 return，不 Destroy，让道具留在地上
+                    Debug.Log("道具栏已满，无法拾取！");
+                }
                 return;
+                // ===================================================
             }
-        }*/
+        }
     }
 
     private void CheckCapacityModulePickup()
@@ -1210,7 +1268,7 @@ public class GridPlayerMover : MonoBehaviour
         }
 
         trojanModuleCount--;
-
+        if (InventoryManager.Instance != null) InventoryManager.Instance.RemoveItem(ModuleType.Trojan);
         isTrojanActive = true;
         trojanTimer = trojanDuration;
         trojanCooldownTimer = trojanCooldown;
@@ -1267,11 +1325,12 @@ public class GridPlayerMover : MonoBehaviour
 
             if (pickup != null)
             {
-                trojanModuleCount += pickup.amount;
-
-                Debug.Log("获得木马模块 +" + pickup.amount + "，当前数量：" + trojanModuleCount);
-
-                Destroy(hit.gameObject);
+                if (InventoryManager.Instance != null && InventoryManager.Instance.TryAddItem(ModuleType.Trojan))
+                {
+                    trojanModuleCount += pickup.amount;
+                    Debug.Log("获得木马模块");
+                    Destroy(hit.gameObject);
+                }
                 return;
             }
         }
@@ -1372,7 +1431,7 @@ public class GridPlayerMover : MonoBehaviour
         }
 
         xRayModuleCount--;
-
+        if (InventoryManager.Instance != null) InventoryManager.Instance.RemoveItem(ModuleType.XRay);
         isXRayActive = true;
         xRayTimer = xRayDuration;
         xRayCooldownTimer = xRayCooldown;
@@ -1468,12 +1527,8 @@ public class GridPlayerMover : MonoBehaviour
             transform.position.z
         );
 
-        Collider[] hits = Physics.OverlapSphere(
-            checkCenter,
-            0.2f,
-            ~0,
-            QueryTriggerInteraction.Collide
-        );
+        // 统一扩充雷达探测半径为 0.5f，防止网格移动错位吃不到
+        Collider[] hits = Physics.OverlapSphere(checkCenter, 0.5f, ~0, QueryTriggerInteraction.Collide);
 
         foreach (Collider hit in hits)
         {
@@ -1481,12 +1536,24 @@ public class GridPlayerMover : MonoBehaviour
 
             if (pickup != null)
             {
-                xRayModuleCount += pickup.amount;
+                // ================== 【端点注入：核心安全拦截与销毁锁】 ==================
+                // 先问大管家：背包有空位吗？
+                if (InventoryManager.Instance != null && InventoryManager.Instance.TryAddItem(ModuleType.XRay))
+                {
+                    xRayModuleCount += pickup.amount;
+                    Debug.Log("获得透视模块");
 
-                Debug.Log("获得透视模块 +" + pickup.amount + "，当前数量：" + xRayModuleCount);
+                    // 核心动作：吃掉道具后，必须让模型彻底在世界中物理湮灭（消失）！
+                    Destroy(hit.gameObject);
+                }
+                else
+                {
+                    // 背包满了，或者大管家不在家，打印提示，并且绝不销毁地上的道具
+                    Debug.Log("道具栏已满或未初始化，无法拾取透视模块！");
+                }
+                // ===================================================================
 
-                Destroy(hit.gameObject);
-                return;
+                return; // 只要处理了该格物体的探测，立刻终止，防止雷达过载
             }
         }
     }
@@ -1525,7 +1592,7 @@ public class GridPlayerMover : MonoBehaviour
         }
 
         intrusionModuleCount--;
-
+        if (InventoryManager.Instance != null) InventoryManager.Instance.RemoveItem(ModuleType.Intrusion);
         currentFormatBulletCount = formatBulletMaxCount;
         hasFormatBullets = true;
 
@@ -1675,11 +1742,13 @@ public class GridPlayerMover : MonoBehaviour
 
             if (pickup != null)
             {
-                intrusionModuleCount += pickup.amount;
-
-                Debug.Log("获得侵入模块 +" + pickup.amount + "，当前数量：" + intrusionModuleCount);
-
-                Destroy(hit.gameObject);
+                // 👇 用下面这段替换掉原来直接加数量的代码
+                if (InventoryManager.Instance != null && InventoryManager.Instance.TryAddItem(ModuleType.Intrusion))
+                {
+                    intrusionModuleCount += pickup.amount;
+                    Debug.Log("获得侵入模块");
+                    Destroy(hit.gameObject);
+                }
                 return;
             }
         }
@@ -1765,5 +1834,44 @@ public class GridPlayerMover : MonoBehaviour
 
         // 给予短暂的移动冷却，防止误触导致连续乱飞
         nextMoveAllowedTime = Time.time + moveDuration;
+    }
+    private void CheckBeanPickup()
+    {
+        Vector3 checkCenter = new Vector3(
+            transform.position.x,
+            transform.position.y - GetPlayerHalfHeight() + 0.1f,
+            transform.position.z
+        );
+
+        // 使用 0.5f 的半径，防止像之前那样擦肩而过吃不到
+        Collider[] hits = Physics.OverlapSphere(
+            checkCenter,
+            0.5f,
+            ~0,
+            QueryTriggerInteraction.Collide
+        );
+
+        foreach (Collider hit in hits)
+        {
+            DataBeanPickup pickup = hit.GetComponent<DataBeanPickup>();
+
+            if (pickup != null)
+            {
+                // 加分
+                beanCount += pickup.scoreValue;
+
+                // 更新屏幕上的文字
+                if (beanCountText != null)
+                {
+                    beanCountText.text = " " + beanCount;
+                }
+
+                // 播放个吃豆音效（如果你有的话可以写在这里）
+
+                // 吃掉糖豆，销毁模型
+                Destroy(pickup.gameObject);
+                return;
+            }
+        }
     }
 }

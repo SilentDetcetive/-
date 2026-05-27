@@ -7,5 +7,7 @@ public enum EndpointColorType
     Red,
     Purple,
     Orange,
-    Blue
+    Blue,
+    pink,
+    blue2
 }
